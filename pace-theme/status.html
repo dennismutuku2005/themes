@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Status</title>
+  <style>
+    /* font import removed to use system fonts */
+
+    :root {
+      --bg-dark: #050505;
+      --accent-primary: #6366f1;
+      --accent-secondary: #a855f7;
+      --text-main: #ffffff;
+      --text-dim: #94a3b8;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --card-radius: 24px;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding: 10px 0;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -1px;
+      color: white;
+    }
+
+    .btn-logout {
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      color: #ff4757;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .status-hero {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
+      border: 1px solid var(--glass-border);
+      border-radius: var(--card-radius);
+      padding: 40px 24px;
+      text-align: center;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      background: #10b981;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+      box-shadow: 0 0 15px #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.2);
+        opacity: 0.7;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .status-text {
+      font-size: 18px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 20px;
+    }
+
+    .stat-icon {
+      font-size: 18px;
+      color: var(--accent-primary);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .stat-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 16px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .info-panel {
+      margin-top: 24px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--card-radius);
+      overflow: hidden;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .btn-home {
+      display: block;
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 20px;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 32px;
+      box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      color: var(--text-dim);
+      font-size: 11px;
+      opacity: 0.4;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">DASHBOARD</div>
+      <a href="$(link-logout)" class="btn-logout">Logout</a>
+    </header>
+
+    <div class="status-hero">
+      <div class="status-dot"></div>
+      <span class="status-text">Active Session</span>
+      <p style="color: var(--text-dim); font-size: 13px; margin-top: 8px;">$(username)</p>
+    </div>
+
+    <div class="grid">
+      <div class="stat-card">
+        <span class="stat-label">Data Remaining</span>
+        <span class="stat-value">$(remain-bytes-total-nice)</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Time Remaining</span>
+        <span class="stat-value">$(session-time-left)</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Upload</span>
+        <span class="stat-value">$(bytes-out-nice)</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Download</span>
+        <span class="stat-value">$(bytes-in-nice)</span>
+      </div>
+    </div>
+
+    <div class="info-panel">
+      <div class="info-row">
+        <span class="stat-label">IP Address</span>
+        <span class="stat-value" style="font-size: 13px;">$(ip)</span>
+      </div>
+      <div class="info-row">
+        <span class="stat-label">MAC Address</span>
+        <span class="stat-value" style="font-size: 13px;">$(mac)</span>
+      </div>
+      <div class="info-row">
+        <span class="stat-label">Uptime</span>
+        <span class="stat-value" style="font-size: 13px;">$(uptime)</span>
+      </div>
+    </div>
+
+    <a href="$(link-orig)" class="btn-home">Back to Portal</a>
+
+    <footer>
+      $(if refresh-timeout)
+      Refreshing in $(refresh-timeout-secs)
+      $(endif)
+    </footer>
+  </div>
+</body>
+
+</html>

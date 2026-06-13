@@ -1,0 +1,17 @@
+{
+    "plans": [
+       
+    ],
+    "links": {
+        "lnmoapi": "https://pace.onenetwork-system.com/hotspot/v1/lonm1.php",
+        "lnmoapi2": "https://pace.onenetwork-system.com/hotspot/v1/lonm2.php",
+        "lnmoapi3": "https://pace.onenetwork-system.com/hotspot/v1/lonm3.php",
+        "lnmoapi4": "https://pace.onenetwork-system.com/hotspot/v1/lonm4.php",
+        "lnmoapi5": "https://pace.onenetwork-system.com/hotspot/v1/lonm5.php",
+        "router": "pace"
+    },
+    "metadata": {
+        "wifiname": "",
+        "customercare": ""
+    }
+}
