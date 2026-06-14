@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content="3; url=$(link-orig)">
+    <title>Connecting...</title>
+    <style>
+        /* font import removed to use system fonts */
+
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 24px;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(37, 99, 235, 0.1);
+            border-radius: 50%;
+            border-top-color: #2563eb;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto 24px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        h1 {
+            font-size: 20px;
+            font-weight: 800;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #0f172a;
+        }
+
+        p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .btn-manual {
+            display: inline-block;
+            margin-top: 32px;
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(37, 99, 235, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="loader"></div>
+        <h1>Almost There</h1>
+        <p>Connecting you to the internet...</p>
+        <a href="$(link-orig)" class="btn-manual">Click here if not redirected</a>
+    </div>
+</body>
+
+</html>

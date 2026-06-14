@@ -1,0 +1,1187 @@
+$(if http-header == "Access-Control-Allow-Origin")*$(endif)
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>WIFI ACCESS</title>
+
+    <style>
+        /* font import removed to use system fonts */
+
+        :root {
+            --bg-light: #f8fafc;
+            --accent-primary: #2563eb;
+            --accent-secondary: #3b82f6;
+            --accent-green: #16a34a;
+            --accent-gold: #d97706;
+            --accent-glow: rgba(37, 99, 235, 0.1);
+            --text-main: #0f172a;
+            --text-dim: #64748b;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --card-radius: 24px;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            overflow-x: hidden;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 100vw;
+            height: 100vw;
+            background: var(--accent-glow);
+            top: -50vw;
+            left: -50vw;
+            z-index: -1;
+            filter: blur(100px);
+            animation: pulse-bg 12s infinite alternate;
+        }
+
+        @keyframes pulse-bg {
+            from {
+                opacity: 0.3;
+            }
+
+            to {
+                opacity: 0.6;
+            }
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            color: var(--accent-primary);
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+            opacity: 1;
+        }
+
+        /* --- Quick Actions --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--card-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        input {
+            width: 100%;
+            height: 56px;
+            background: #fff;
+            border: 1.5px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 0 20px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 17px;
+            font-weight: 600;
+            transition: var(--transition);
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-pay {
+            width: 100%;
+            height: 48px;
+            background: var(--accent-primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 16px;
+            box-shadow: none;
+        }
+
+        .btn-pay:active {
+            transform: scale(0.97);
+        }
+
+        .btn-verify {
+            width: 100%;
+            height: 44px;
+            background: transparent;
+            border: 1.5px solid var(--accent-primary);
+            border-radius: 8px;
+            color: var(--accent-primary);
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 20px;
+        }
+
+        .btn-verify:hover {
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        /* --- Package Grid --- */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 30px 0 20px;
+        }
+
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: var(--glass-border);
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-main);
+            opacity: 1;
+        }
+
+        .package-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .package-card {
+            background: #fff;
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: none;
+        }
+
+        .package-card:active {
+            transform: scale(0.95);
+        }
+
+        .package-card.selected {
+            border-color: var(--accent-primary);
+            background: rgba(37, 99, 235, 0.05);
+            box-shadow: none;
+        }
+
+        .pkg-duration {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-dim);
+            opacity: 1;
+            margin-bottom: 4px;
+        }
+
+        .pkg-price {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .pkg-speed {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- Tabs --- */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-top: 40px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-dim);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tab-btn.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        .form-section {
+            display: none;
+            margin-top: 16px;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .steps-nav {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 40px;
+        }
+
+        .step-pill {
+            height: 4px;
+            background: var(--glass-border);
+            border-radius: 2px;
+        }
+
+        .step-pill.active {
+            background: var(--accent-primary);
+        }
+
+        .step-label {
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        /* Custom CSS Loaders */
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Loader 1 - Spinning Circle (Primary) */
+        .loader-spin {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(37, 99, 235, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--accent-primary);
+            animation: spin 1s ease-in-out infinite;
+            margin: 10px auto;
+        }
+
+        /* Loader 2 - Pulse Dots */
+        .loader-pulse {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            margin: 10px auto;
+        }
+
+        .loader-pulse div {
+            width: 12px;
+            height: 12px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+
+        .loader-pulse div:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .loader-pulse div:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0.6);
+                opacity: 0.6;
+            }
+
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Loader 3 - Bouncing Bars */
+        .loader-bars {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+            margin: 10px auto;
+        }
+
+        .loader-bars div {
+            width: 6px;
+            height: 30px;
+            background: var(--accent-primary);
+            border-radius: 3px;
+            animation: bars 1.2s ease-in-out infinite;
+        }
+
+        .loader-bars div:nth-child(2) {
+            animation-delay: -1.0s;
+        }
+
+        .loader-bars div:nth-child(3) {
+            animation-delay: -0.8s;
+        }
+
+        .loader-bars div:nth-child(4) {
+            animation-delay: -0.6s;
+        }
+
+        .loader-bars div:nth-child(5) {
+            animation-delay: -0.4s;
+        }
+
+        @keyframes bars {
+
+            0%,
+            40%,
+            100% {
+                transform: scaleY(0.5);
+                opacity: 0.6;
+            }
+
+            20% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        /* Loader 4 - Dual Ring */
+        .loader-dual {
+            width: 50px;
+            height: 50px;
+            border: 3px solid transparent;
+            border-radius: 50%;
+            border-top-color: var(--accent-primary);
+            border-bottom-color: var(--accent-secondary);
+            animation: spin 1.5s linear infinite;
+            margin: 10px auto;
+            position: relative;
+        }
+
+        .loader-dual::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            border: 3px solid transparent;
+            border-radius: 50%;
+            border-top-color: var(--accent-green);
+            border-bottom-color: var(--accent-gold);
+            animation: spin 1s linear reverse infinite;
+        }
+
+        /* Loader 5 - Ripple Effect */
+        .loader-ripple {
+            width: 50px;
+            height: 50px;
+            margin: 10px auto;
+            position: relative;
+        }
+
+        .loader-ripple div {
+            position: absolute;
+            border: 2px solid var(--accent-primary);
+            border-radius: 50%;
+            width: 100%;
+            height: 100%;
+            animation: ripple 1.5s ease-out infinite;
+        }
+
+        .loader-ripple div:nth-child(2) {
+            animation-delay: -0.75s;
+            border-color: var(--accent-secondary);
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Timer text style */
+        .loader-timer {
+            color: var(--text-dim);
+            font-size: 14px;
+            margin-top: 10px;
+            font-weight: 400;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-dim);
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0.8;
+            letter-spacing: 2px;
+        }
+
+        /* SweetAlert Custom Overrides */
+        .swal-bg {
+            background-color: var(--bg-light) !important;
+            border: 1px solid var(--glass-border) !important;
+            border-radius: 24px !important;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1) !important;
+        }
+
+        .swal-title {
+            color: var(--text-main) !important;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+            font-weight: 800 !important;
+        }
+
+        .swal-text {
+            color: var(--text-dim) !important;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+        }
+
+        .swal-input {
+            background: #fff !important;
+            color: var(--text-main) !important;
+            border-radius: 12px !important;
+            border: 1px solid var(--glass-border) !important;
+            text-align: center !important;
+        }
+
+        /* Custom loader container for SweetAlert */
+        .custom-loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+    </style>
+<base target="_blank">
+</head>
+
+<body>
+    <div class="bg-glow"></div>
+
+    <div class="container">
+        <header>
+            <div id="wifi_name_label" class="logo-text">LOADING...</div>
+            <p class="subtitle">Select a package to continue</p>
+        </header>
+
+        <button onclick="paidLogin()" class="btn-verify">Already Paid? Verify session</button>
+
+        <div class="section-header">
+            <div class="section-title">Packages</div>
+            <div class="section-line"></div>
+        </div>
+
+        <div id="package-grid" class="package-grid">
+            <!-- Dynamic Injection -->
+        </div>
+
+        <div style="text-align: center; margin: 20px 0;">
+            <a href="points.html" style="display: inline-block; padding: 12px 24px; background: var(--accent-primary); color: white; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">WiFi Points</a>
+        </div>
+
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('voucher', this)">Voucher</button>
+            <button class="tab-btn" onclick="switchTab('reconnect', this)">M-Pesa Code</button>
+            <button class="tab-btn" onclick="switchTab('admin', this)">Admin</button>
+        </div>
+
+        <div id="tab-voucher" class="form-section active">
+            <div class="glass-panel">
+                <input type="text" id="v-code" placeholder="Enter Voucher Code" style="margin-bottom: 12px;">
+                <button class="btn-pay" style="background: var(--accent-gold); color: black;"
+                    onclick="activateVoucher()">Activate Voucher</button>
+            </div>
+        </div>
+
+        <div id="tab-reconnect" class="form-section">
+            <div class="glass-panel">
+                <input type="text" id="r-code" placeholder="Enter M-Pesa Code (e.g. QAH9...)"
+                    style="margin-bottom: 12px;">
+                <button class="btn-pay" onclick="restoreSession()">Submit M-Pesa Code</button>
+            </div>
+        </div>
+
+        <div id="tab-admin" class="form-section">
+            <div class="glass-panel">
+                <form name="login" action="$(link-login-only)" method="post">
+                    <input type="hidden" name="dst" value="$(link-orig)" />
+                    <input type="hidden" name="popup" value="true" />
+                    <input type="text" name="username" placeholder="Username" style="margin-bottom: 12px;">
+                    <input type="password" name="password" placeholder="Password" style="margin-bottom: 12px;">
+                    <button type="submit" class="btn-pay">Login Admin</button>
+                </form>
+            </div>
+        </div>
+
+        <footer>© 2026 pacewisp</footer>
+    </div>
+
+    <!-- Mikrotik Form -->
+    <form name="sendin" action="$(link-login-only)" method="post" style="display:none">
+        <input type="hidden" name="username" />
+        <input type="hidden" name="password" />
+        <input type="hidden" name="dst" value="$(link-orig)" />
+        <input type="hidden" name="popup" value="true" />
+    </form>
+
+    <input type="hidden" id="mac" value="$(mac)">
+
+    <script src="jquery-3.6.0.min.js"></script>
+    <script src="swal.js"></script>
+
+    $(if chap-id)
+    <script>
+        function doLogin(mac, mac) {
+            console.log("Before hashing:" + mac);
+            document.sendin.username.value = mac;
+            document.sendin.password.value = hexMD5('$(chap-id)' + mac + '$(chap-challenge)');
+            console.log("After hashing. Redirecting...");
+            document.sendin.submit();
+            return false;
+        }
+
+        /* MD5 IMPLEMENTATION */
+        function safe_add(x, y) { var lsw = (x & 0xFFFF) + (y & 0xFFFF); var msw = (x >> 16) + (y >> 16) + (lsw >> 16); return (msw << 16) | (lsw & 0xFFFF) }
+        function rol(num, cnt) { return (num << cnt) | (num >>> (32 - cnt)) }
+        function cmn(q, a, b, x, s, t) { return safe_add(rol(safe_add(safe_add(a, q), safe_add(x, t)), s), b) }
+        function ff(a, b, c, d, x, s, t) { return cmn((b & c) | ((~b) & d), a, b, x, s, t) }
+        function gg(a, b, c, d, x, s, t) { return cmn((b & d) | (c & (~d)), a, b, x, s, t) }
+        function hh(a, b, c, d, x, s, t) { return cmn(b ^ c ^ d, a, b, x, s, t) }
+        function ii(a, b, c, d, x, s, t) { return cmn(c ^ (b | (~d)), a, b, x, s, t) }
+        function coreMD5(x) { var a = 1732584193; var b = -271733879; var c = -1732584194; var d = 271733878; for (i = 0; i < x.length; i += 16) { var olda = a; var oldb = b; var oldc = c; var oldd = d; a = ff(a, b, c, d, x[i + 0], 7, -680876936); d = ff(d, a, b, c, x[i + 1], 12, -389564586); c = ff(c, d, a, b, x[i + 2], 17, 606105819); b = ff(b, c, d, a, x[i + 3], 22, -1044525330); a = ff(a, b, c, d, x[i + 4], 7, -176418897); d = ff(d, a, b, c, x[i + 5], 12, 1200080426); c = ff(c, d, a, b, x[i + 6], 17, -1473231341); b = ff(b, c, d, a, x[i + 7], 22, -45705983); a = ff(a, b, c, d, x[i + 8], 7, 1770035416); d = ff(d, a, b, c, x[i + 9], 12, -1958414417); c = ff(c, d, a, b, x[i + 10], 17, -42063); b = ff(b, c, d, a, x[i + 11], 22, -1990404162); a = ff(a, b, c, d, x[i + 12], 7, 1804603682); d = ff(d, a, b, c, x[i + 13], 12, -40341101); c = ff(c, d, a, b, x[i + 14], 17, -1502002290); b = ff(b, c, d, a, x[i + 15], 22, 1236535329); a = gg(a, b, c, d, x[i + 1], 5, -165796510); d = gg(d, a, b, c, x[i + 6], 9, -1069501632); c = gg(c, d, a, b, x[i + 11], 14, 643717713); b = gg(b, c, d, a, x[i + 0], 20, -373897302); a = gg(a, b, c, d, x[i + 5], 5, -701558691); d = gg(d, a, b, c, x[i + 10], 9, 38016083); c = gg(c, d, a, b, x[i + 15], 14, -660478335); b = gg(b, c, d, a, x[i + 4], 20, -405537848); a = gg(a, b, c, d, x[i + 9], 5, 568446438); d = gg(d, a, b, c, x[i + 14], 9, -1019803690); c = gg(c, d, a, b, x[i + 3], 14, -187363961); b = gg(b, c, d, a, x[i + 8], 20, 1163531501); a = gg(a, b, c, d, x[i + 13], 5, -1444681467); d = gg(d, a, b, c, x[i + 2], 9, -51403784); c = gg(c, d, a, b, x[i + 7], 14, 1735328473); b = gg(b, c, d, a, x[i + 12], 20, -1926607734); a = hh(a, b, c, d, x[i + 5], 4, -378558); d = hh(d, a, b, c, x[i + 8], 11, -2022574463); c = hh(c, d, a, b, x[i + 11], 16, 1839030562); b = hh(b, c, d, a, x[i + 14], 23, -35309556); a = hh(a, b, c, d, x[i + 1], 4, -1530992060); d = hh(d, a, b, c, x[i + 4], 11, 1272893353); c = hh(c, d, a, b, x[i + 7], 16, -155497632); b = hh(b, c, d, a, x[i + 10], 23, -1094730640); a = hh(a, b, c, d, x[i + 13], 4, 681279174); d = hh(d, a, b, c, x[i + 0], 11, -358537222); c = hh(c, d, a, b, x[i + 3], 16, -722521979); b = hh(b, c, d, a, x[i + 6], 23, 76029189); a = hh(a, b, c, d, x[i + 9], 4, -640364487); d = hh(d, a, b, c, x[i + 12], 11, -421815835); c = hh(c, d, a, b, x[i + 15], 16, 530742520); b = hh(b, c, d, a, x[i + 2], 23, -995338651); a = ii(a, b, c, d, x[i + 0], 6, -198630844); d = ii(d, a, b, c, x[i + 7], 10, 1126891415); c = ii(c, d, a, b, x[i + 14], 15, -1416354905); b = ii(b, c, d, a, x[i + 5], 21, -57434055); a = ii(a, b, c, d, x[i + 12], 6, 1700485571); d = ii(d, a, b, c, x[i + 3], 10, -1894986606); c = ii(c, d, a, b, x[i + 10], 15, -1051523); b = ii(b, c, d, a, x[i + 1], 21, -2054922799); a = ii(a, b, c, d, x[i + 8], 6, 1873313359); d = ii(d, a, b, c, x[i + 15], 10, -30611744); c = ii(c, d, a, b, x[i + 6], 15, -1560198380); b = ii(b, c, d, a, x[i + 13], 21, 1309151649); a = ii(a, b, c, d, x[i + 4], 6, -145523070); d = ii(d, a, b, c, x[i + 11], 10, -1120210379); c = ii(c, d, a, b, x[i + 2], 15, 718787259); b = ii(b, c, d, a, x[i + 9], 21, -343485551); a = safe_add(a, olda); b = safe_add(b, oldb); c = safe_add(c, oldc); d = safe_add(d, oldd); } return [a, b, c, d] }
+        function binl2hex(b) { var h = "0123456789abcdef", s = ""; for (var i = 0; i < b.length * 4; i++) { s += h.charAt((b[i >> 2] >> ((i % 4) * 8 + 4)) & 0xF) + h.charAt((b[i >> 2] >> ((i % 4) * 8)) & 0xF) } return s }
+        function str2binl(s) { var n = ((s.length + 8) >> 6) + 1, b = new Array(n * 16); for (var i = 0; i < n * 16; i++)b[i] = 0; for (var i = 0; i < s.length; i++)b[i >> 2] |= (s.charCodeAt(i) & 0xFF) << ((i % 4) * 8); b[i >> 2] |= 0x80 << ((i % 4) * 8); b[n * 16 - 2] = s.length * 8; return b }
+        function hexMD5(s) { return binl2hex(coreMD5(str2binl(s))) }
+    </script>
+    $(endif)
+
+    <script>
+        var configData = null;
+        var selectedPlan = null;
+        var timerInterval = null;
+
+        $(document).ready(function () {
+            // Load Data with cache busting for Mikrotik compatibility
+            $.getJSON("data.json?v=" + Math.random(), function (data) {
+                if (data) {
+                    configData = data;
+                    $("#wifi_name_label").html(data.metadata.wifiname);
+                    $("<div style='font-family: inherit; font-size: 25px; font-weight: 800; color: var(--accent-primary); margin-top: 5px; opacity: 0.9;'>CUSTOMER CARE <a href='tel:" + data.metadata.customercare + "' style='color: var(--accent-primary); text-decoration: none; padding-bottom: 2px;'>" + data.metadata.customercare + "</a></div>").insertAfter("#wifi_name_label");
+
+                    const grid = $("#package-grid");
+                    grid.empty();
+                    data.plans.forEach((p, i) => {
+                        grid.append(`
+                            <div class="package-card" id="pkg-${i}" onclick="selectPlan(${i})">
+                                <div class="pkg-duration">${p.duration}</div>
+                                <div class="pkg-price">KES ${p.price}</div>
+                                <div class="pkg-speed">${p.speed}</div>
+                            </div>
+                        `);
+                    });
+                }
+            }).fail(function () {
+                console.error("Critical: Cannot load data.json from server.");
+            });
+
+            // Auto-Check Session
+            setTimeout(checkImplicitSession, 1000);
+        });
+
+        function selectPlan(i) {
+            if (!configData) return Swal.fire('Wait', 'System is loading config...', 'info');
+            $(".package-card").removeClass("selected");
+            $(`#pkg-${i}`).addClass("selected");
+            selectedPlan = configData.plans[i];
+
+            // Trigger Phone Input
+            promptPhone();
+        }
+
+        function promptPhone() {
+            if (!configData || !selectedPlan) return;
+            const mac = $("#mac").val();
+
+            Swal.fire({
+                title: 'COMPLETE PURCHASE',
+                text: `Pay KES ${selectedPlan.price} for ${selectedPlan.name}`,
+                input: 'tel',
+                inputPlaceholder: '07XXXXXXXX',
+                background: '#f8fafc',
+                color: '#0f172a',
+                showCancelButton: true,
+                confirmButtonText: 'PAY NOW',
+                showLoaderOnConfirm: true,
+                customClass: { container: 'swal-bg', title: 'swal-title', input: 'swal-input' },
+                preConfirm: (phone) => {
+                    const payload = {
+                        mac: mac,
+                        plan: selectedPlan.name,
+                        phone: phone,
+                        amount: selectedPlan.price,
+                        routr: configData.links.router,
+                        accoint1: mac
+                    };
+
+                    return $.ajax({
+                        type: "POST",
+                        url: configData.links.lnmoapi,
+                        contentType: "application/json",
+                        data: JSON.stringify(payload)
+                    }).catch(error => {
+                        const errorDetail = `Status: ${error.status}, Text: ${error.statusText}, Response: ${error.responseText || 'None'}`;
+                        console.error("LONM1 Error:", error);
+
+                        // Send error to server-side logger
+                        $.ajax({
+                            type: "POST",
+                            url: configData.links.lnmoapi.replace('lonm1.php', 'log_error.php'),
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                type: "LONM1_ERROR",
+                                mac: mac,
+                                phone: phone,
+                                detail: errorDetail,
+                                timestamp: new Date().toISOString()
+                            })
+                        });
+
+                        Swal.showValidationMessage(`Request failed: ${error.statusText || 'Check connection'}. Detailed error logged.`);
+                    });
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.value) {
+                    if (result.value.action === "connect") {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Active Session Found!',
+                            html: `
+                                <div class="custom-loader">
+                                     <div class="loader-pulse" style="margin-bottom: 15px;">
+                                         <div></div><div></div><div></div>
+                                     </div>
+                                     <p style="color: #64748b; font-size: 14px;">${result.value.message || 'Reconnecting you now.'}</p>
+                                     <div style="margin-top: 20px; padding: 15px; background: rgba(37, 99, 235, 0.05); border-radius: 16px; border: 1px solid rgba(37, 99, 235, 0.2); text-align: left;">
+                                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                             <span style="font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">Current Plan</span>
+                                             <span style="font-size: 13px; color: #2563eb; font-weight: 800;">${result.value.plan || 'Active'}</span>
+                                         </div>
+                                         <div style="display: flex; justify-content: space-between; align-items: center;">
+                                             <span style="font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">Expiring On</span>
+                                             <span style="font-size: 13px; color: #0f172a; font-weight: 600;">${result.value.expire_time || 'N/A'}</span>
+                                         </div>
+                                     </div>
+                                     <p style="color: #16a34a; font-size: 12px; font-weight: 600; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px;">Restoring your access...</p>
+                                 </div>
+                            `,
+                            showConfirmButton: false,
+                            timer: 3000,
+                            background: '#f8fafc'
+                        }).then(() => {
+                            doLogin(mac, mac);
+                        });
+                    } else if (result.value.CheckoutRequestID) {
+                        monitorStatus(result.value.CheckoutRequestID);
+                    } else {
+                        Swal.fire({
+                            icon: result.value.status === "error" ? 'error' : 'info',
+                            title: result.value.status === "error" ? 'ROUTER ERROR' : 'Notice',
+                            text: result.value.message || 'An unexpected response was received. Please try again.',
+                            background: '#f8fafc',
+                            confirmButtonColor: '#2563eb'
+                        });
+                    }
+                }
+            });
+        }
+
+        function monitorStatus(cid) {
+            if (!configData) return;
+
+            let counter = 0;
+            const maxAttempts = 20;
+
+            // Show payment verification dialog with custom CSS loader
+            Swal.fire({
+                title: "VERIFYING PAYMENT...",
+                html: `
+                    <div class="custom-loader">
+                        <div class="loader-dual"></div>
+                        <p class="loader-timer" id="timer-text">Waiting for confirmation... (40s)</p>
+                        <p style="color: #64748b; font-size: 12px; margin-top: 10px;">Ensure you have entered the M-Pesa PIN</p>
+                    </div>
+                `,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                background: '#f8fafc'
+            });
+
+            const poll = setInterval(() => {
+                counter++;
+                const remaining = 40 - (counter * 2);
+
+                // Update timer text
+                const timerEl = document.getElementById('timer-text');
+                if (timerEl) {
+                    timerEl.textContent = `Waiting for confirmation... (${remaining}s)`;
+                }
+
+                if (counter >= 20) {
+                    clearInterval(poll);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Payment Cancelled',
+                        text: 'Payment was cancelled due to timeout. Please try again.',
+                        confirmButtonText: 'Try Again',
+                        background: '#f8fafc',
+                        confirmButtonColor: '#2563eb'
+                    });
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: configData.links.lnmoapi3,
+                    contentType: "application/json",
+                    data: JSON.stringify({ ref: cid }),
+                    success: function (res) {
+                        if (res.ResultCode === "0") {
+                            clearInterval(poll);
+
+                            // Update to activation dialog with different loader
+                            Swal.update({
+                                title: "ACTIVATING CONNECTION...",
+                                html: `
+                                    <div class="custom-loader">
+                                        <div class="loader-bars">
+                                            <div></div><div></div><div></div><div></div><div></div>
+                                        </div>
+                                        <p style="color: #64748b; margin-top: 10px;">Your payment is verified. Now activating your internet connection...</p>
+                                    </div>
+                                `,
+                                showConfirmButton: false
+                            });
+
+                            finalizeConnection(res.mpesa_receipt_number, poll);
+
+                        } else if (res.ResultCode && res.ResultCode !== "0") {
+                            clearInterval(poll);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Payment Failed',
+                                text: res.ResultDesc || 'Payment was cancelled or failed.',
+                                confirmButtonText: 'Try Again',
+                                background: '#f8fafc',
+                                confirmButtonColor: '#2563eb'
+                            });
+                        }
+                    },
+                    error: function () {
+                        // Just update message on error, don't close
+                        const timerEl = document.getElementById('timer-text');
+                        if (timerEl) {
+                            timerEl.textContent = `Retrying... (${remaining}s remaining)`;
+                        }
+                    }
+                });
+            }, 2000);
+        }
+
+        function finalizeConnection(receipt, poll) {
+            if (!configData) return;
+
+            $.ajax({
+                type: "POST",
+                url: configData.links.lnmoapi4,
+                contentType: "application/json",
+                data: JSON.stringify({ mpesa_receipt_number: receipt }),
+                success: function (res) {
+                    if (res.status === "active" || res.success) {
+                        // Update to success message with pulse loader
+                        Swal.update({
+                            title: "CONNECTION SUCCESSFUL!",
+                            html: `
+                                <div class="custom-loader">
+                                    <div class="loader-pulse">
+                                        <div></div><div></div><div></div>
+                                    </div>
+                                    <p style="color: #16a34a; margin-top: 10px;">Your internet connection is now active. Logging you in...</p>
+                                </div>
+                            `,
+                            showConfirmButton: false
+                        });
+
+                        setTimeout(() => doLogin($("#mac").val(), $("#mac").val()), 2000);
+                    } else {
+                        clearInterval(poll);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Activation failed.',
+                            background: '#f8fafc',
+                            confirmButtonColor: '#2563eb'
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    if (status === 'timeout') {
+                        // On timeout, still try to login as payment might be processed
+                        Swal.update({
+                            title: "CONNECTION SUCCESSFUL!",
+                            html: `
+                                <div class="custom-loader">
+                                    <div class="loader-pulse">
+                                        <div></div><div></div><div></div>
+                                    </div>
+                                    <p style="color: #16a34a; margin-top: 10px;">Your internet connection is now active. Logging you in...</p>
+                                </div>
+                            `,
+                            showConfirmButton: false
+                        });
+
+                        setTimeout(() => doLogin($("#mac").val(), $("#mac").val()), 2000);
+                    } else {
+                        clearInterval(poll);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Activation failed. Please try again.',
+                            background: '#f8fafc',
+                            confirmButtonColor: '#2563eb'
+                        });
+                    }
+                }
+            });
+        }
+
+        function paidLogin() {
+            if (!configData) return Swal.fire('Error', 'Loading system...', 'info');
+            const mac = $("#mac").val();
+
+            // Show checking dialog with spin loader
+            Swal.fire({
+                title: 'Checking Payment Status...',
+                html: `
+                    <div class="custom-loader">
+                        <div class="loader-spin"></div>
+                        <p style="color: #64748b; margin-top: 10px;">Please hold on while we verify your payment</p>
+                    </div>
+                `,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                background: '#f8fafc'
+            });
+
+            $.ajax({
+                type: "POST",
+                url: configData.links.lnmoapi3,
+                contentType: "application/json",
+                data: JSON.stringify({ mac: mac }),
+                success: function (res) {
+                    if (res.status === "active" || res.status === "success" || res.action === "connect") {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Session Verified!',
+                            html: `
+                                <div class="custom-loader">
+                                     <div class="loader-pulse" style="margin-bottom: 15px;">
+                                         <div></div><div></div><div></div>
+                                     </div>
+                                     <p style="color: #64748b; font-size: 14px;">${res.message || 'Your session is active. Reconnecting...'}</p>
+                                     ${res.plan ? `
+                                     <div style="margin-top: 20px; padding: 15px; background: rgba(37, 99, 235, 0.05); border-radius: 16px; border: 1px solid rgba(37, 99, 235, 0.2); text-align: left;">
+                                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                             <span style="font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">Current Plan</span>
+                                             <span style="font-size: 13px; color: #2563eb; font-weight: 800;">${res.plan}</span>
+                                         </div>
+                                         <div style="display: flex; justify-content: space-between; align-items: center;">
+                                             <span style="font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">Expiring On</span>
+                                             <span style="font-size: 13px; color: #0f172a; font-weight: 600;">${res.expire_time || 'N/A'}</span>
+                                         </div>
+                                     </div>` : ''}
+                                     <p style="color: #16a34a; font-size: 12px; font-weight: 600; margin-top: 15px; text-transform: uppercase;">Logging you in...</p>
+                                 </div>
+                            `,
+                            showConfirmButton: false,
+                            timer: 2500,
+                            background: '#f8fafc'
+                        }).then(() => {
+                            doLogin(mac, mac);
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: res.status === "error" ? 'SYSTEM ERROR' : 'Session Inactive',
+                            text: res.message || 'Your payment session has expired. Please make a new payment.',
+                            background: '#f8fafc',
+                            confirmButtonColor: '#2563eb'
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Connection Error',
+                        text: 'Unable to verify payment status. Please check your internet connection and try again.',
+                        background: '#f8fafc',
+                        confirmButtonColor: '#2563eb'
+                    });
+                }
+            });
+        }
+
+        function activateVoucher() {
+            if (!configData) return;
+            const code = $("#v-code").val();
+            const mac = $("#mac").val();
+
+            if (!code) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please enter a voucher code',
+                    background: '#f8fafc',
+                    confirmButtonColor: '#2563eb'
+                });
+                return;
+            }
+
+            // Show voucher validation dialog with ripple loader
+            Swal.fire({
+                title: "VALIDATING VOUCHER...",
+                html: `
+                    <div class="custom-loader">
+                        <div class="loader-ripple">
+                            <div></div><div></div>
+                        </div>
+                        <p style="color: #64748b; margin-top: 10px;">Please wait while we validate your voucher code</p>
+                    </div>
+                `,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                background: '#f8fafc'
+            });
+
+            $.ajax({
+                type: "POST",
+                url: configData.links.lnmoapi2,
+                contentType: "application/json",
+                data: JSON.stringify({ mac: mac, code: code, router: configData.links.router }),
+                success: function (res) {
+                    if (res.status === "active") {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'SUCCESS!',
+                            text: 'Voucher activated!',
+                            showConfirmButton: false,
+                            timer: 1200,
+                            background: '#f8fafc'
+                        });
+                        setTimeout(() => doLogin(mac, mac), 1200);
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Failed',
+                            text: res.message || 'Invalid code.',
+                            background: '#f8fafc',
+                            confirmButtonColor: '#2563eb'
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Validation failed.',
+                        background: '#f8fafc',
+                        confirmButtonColor: '#2563eb'
+                    });
+                }
+            });
+        }
+
+        function restoreSession() {
+            if (!configData) return;
+            const code = $("#r-code").val();
+            const mac = $("#mac").val();
+
+            if (!code) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please enter M-Pesa code',
+                    background: '#f8fafc',
+                    confirmButtonColor: '#2563eb'
+                });
+                return;
+            }
+
+            // Show reconnection dialog with dual ring loader
+            Swal.fire({
+                title: "RECONNECTING...",
+                html: `
+                    <div class="custom-loader">
+                        <div class="loader-dual"></div>
+                        <p style="color: #64748b; margin-top: 10px;">Please wait while we restore your session</p>
+                    </div>
+                `,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                background: '#f8fafc'
+            });
+
+            $.ajax({
+                type: "POST",
+                url: configData.links.lnmoapi5,
+                contentType: "application/json",
+                data: JSON.stringify({ mpesa_code: code, mac: mac }),
+                success: function (res) {
+                    if (res.status === "active") {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'RESTORED!',
+                            text: 'Session restored!',
+                            showConfirmButton: false,
+                            timer: 1200,
+                            background: '#f8fafc'
+                        });
+                        setTimeout(() => doLogin(mac, mac), 1200);
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: res.message || 'Payment not found.',
+                            background: '#f8fafc',
+                            confirmButtonColor: '#2563eb'
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Restoration failed.',
+                        background: '#f8fafc',
+                        confirmButtonColor: '#2563eb'
+                    });
+                }
+            });
+        }
+
+        function checkImplicitSession() {
+            const mac = $("#mac").val();
+            if (!configData) return;
+            $.ajax({
+                type: "POST",
+                url: configData.links.lnmoapi3,
+                contentType: "application/json",
+                data: JSON.stringify({ mac: mac }),
+                success: function (res) {
+                    if (res.status === "active") doLogin(mac, mac);
+                }
+            });
+        }
+
+        function switchTab(id, el) {
+            $('.tab-btn').removeClass('active');
+            $(el).addClass('active');
+            $('.form-section').removeClass('active');
+            $(`#tab-${id}`).addClass('active');
+        }
+    </script>
+</body>
+
+</html>

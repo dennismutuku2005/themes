@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>WiFi Points</title>
+    <style>
+        :root {
+            --bg-light: #f8fafc;
+            --accent-primary: #2563eb;
+            --accent-secondary: #3b82f6;
+            --accent-green: #16a34a;
+            --accent-gold: #d97706;
+            --accent-glow: rgba(37, 99, 235, 0.1);
+            --text-main: #0f172a;
+            --text-dim: #64748b;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --card-radius: 24px;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            overflow-x: hidden;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 100vw;
+            height: 100vw;
+            background: var(--accent-glow);
+            top: -50vw;
+            left: -50vw;
+            z-index: -1;
+            filter: blur(100px);
+            animation: pulse-bg 12s infinite alternate;
+        }
+
+        @keyframes pulse-bg {
+            from { opacity: 0.3; }
+            to { opacity: 0.6; }
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            color: var(--accent-primary);
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+            opacity: 1;
+        }
+
+        .btn-pay {
+            width: 100%;
+            height: 48px;
+            background: var(--accent-primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 16px;
+            box-shadow: none;
+        }
+
+        .btn-pay:active { transform: scale(0.97); }
+
+        .btn-verify {
+            width: 100%;
+            height: 44px;
+            background: transparent;
+            border: 1.5px solid var(--accent-primary);
+            border-radius: 8px;
+            color: var(--accent-primary);
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 20px;
+        }
+
+        .btn-verify:hover { background: rgba(37, 99, 235, 0.1); }
+
+        .btn-purchase {
+            display: block;
+            width: 100%;
+            height: 56px;
+            background: var(--accent-green);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            text-align: center;
+            line-height: 56px;
+            margin-bottom: 24px;
+        }
+
+        .btn-purchase:active { transform: scale(0.97); }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--card-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        input {
+            width: 100%;
+            height: 56px;
+            background: #fff;
+            border: 1.5px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 0 20px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 17px;
+            font-weight: 600;
+            transition: var(--transition);
+            text-align: center;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 30px 0 20px;
+        }
+
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: var(--glass-border);
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-main);
+            opacity: 1;
+        }
+
+        .package-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .package-card {
+            background: #fff;
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: none;
+        }
+
+        .package-card:active { transform: scale(0.95); }
+        .package-card.selected { border-color: var(--accent-primary); background: rgba(37, 99, 235, 0.05); }
+
+        .pkg-duration { font-size: 12px; font-weight: 700; color: var(--text-dim); opacity: 1; margin-bottom: 4px; }
+        .pkg-price { font-size: 26px; font-weight: 800; color: var(--text-main); margin-bottom: 6px; }
+        .pkg-speed { font-size: 10px; font-weight: 700; color: var(--accent-primary); text-transform: uppercase; letter-spacing: 1px; }
+
+        .points-display {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .points-number {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--accent-primary);
+            line-height: 1;
+        }
+
+        .points-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 8px;
+        }
+
+        .info-text {
+            font-size: 12px;
+            color: var(--text-dim);
+            text-align: center;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        .account-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .account-row:last-child { border-bottom: none; }
+        .account-label { font-size: 12px; color: var(--text-dim); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .account-value { font-size: 14px; color: var(--text-main); font-weight: 700; }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-dim);
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0.8;
+            letter-spacing: 2px;
+        }
+
+        .hidden { display: none; }
+
+        .swal-bg {
+            background-color: var(--bg-light) !important;
+            border: 1px solid var(--glass-border) !important;
+            border-radius: 24px !important;
+            box-shadow: none !important;
+        }
+        .swal-title { color: var(--text-main) !important; font-weight: 800 !important; }
+        .swal-text { color: var(--text-dim) !important; }
+        .swal-input { background: #fff !important; color: var(--text-main) !important; border-radius: 12px !important; border: 1px solid var(--glass-border) !important; text-align: center !important; }
+
+        .custom-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .loader-spin { width: 50px; height: 50px; border: 3px solid rgba(37, 99, 235, 0.1); border-radius: 50%; border-top-color: var(--accent-primary); animation: spin 1s ease-in-out infinite; margin: 10px auto; }
+        .loader-pulse { display: flex; gap: 8px; justify-content: center; align-items: center; margin: 10px auto; }
+        .loader-pulse div { width: 12px; height: 12px; background: var(--accent-primary); border-radius: 50%; animation: pulse 1.4s ease-in-out infinite; }
+        .loader-pulse div:nth-child(1) { animation-delay: -0.32s; }
+        .loader-pulse div:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes pulse { 0%, 80%, 100% { transform: scale(0.6); opacity: 0.6; } 40% { transform: scale(1); opacity: 1; } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+<base target="_blank">
+</head>
+
+<body>
+    <div class="bg-glow"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo-text">WiFi POINTS</div>
+            <p class="subtitle">Earn & redeem loyalty points</p>
+        </header>
+
+        <a href="login.html" class="btn-purchase">Purchase WiFi</a>
+
+        <!-- MAIN: VIEW / REDEEM -->
+        <div class="section-header">
+            <div class="section-title">My Points</div>
+            <div class="section-line"></div>
+        </div>
+        <div class="glass-panel">
+            <input type="text" id="acc-phone" placeholder="Phone Number" style="margin-bottom: 12px;">
+            <input type="password" id="acc-pin" placeholder="PIN" style="margin-bottom: 12px;">
+            <button class="btn-pay" onclick="accessAccount()">View Points & Redeem</button>
+        </div>
+
+        <!-- RESULTS -->
+        <div id="account-result" class="hidden">
+            <div class="glass-panel points-display">
+                <div class="points-number" id="points-value">0</div>
+                <div class="points-label">Available Points</div>
+            </div>
+
+            <div class="glass-panel" style="padding: 20px;">
+                <div class="account-row">
+                    <span class="account-label">Account Name</span>
+                    <span class="account-value" id="display-name">-</span>
+                </div>
+                <div class="account-row">
+                    <span class="account-label">Phone</span>
+                    <span class="account-value" id="display-phone">-</span>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <div class="section-title">Redeem</div>
+                <div class="section-line"></div>
+            </div>
+            <div class="glass-panel">
+                <div class="package-grid" id="redeem-grid"></div>
+                <p class="info-text" id="redeem-info">Select a package to redeem your points.</p>
+                <button class="btn-pay hidden" id="btn-confirm-redeem" onclick="confirmRedeem()">Confirm Redemption</button>
+            </div>
+        </div>
+
+        <!-- CREATE ACCOUNT (toggleable) -->
+        <div class="section-header">
+            <div class="section-title">New Here?</div>
+            <div class="section-line"></div>
+        </div>
+        <button class="btn-verify" onclick="toggleCreate()">Create Account</button>
+        <div id="create-panel" class="glass-panel hidden">
+            <input type="text" id="reg-phone" placeholder="Phone Number (07XXXXXXXX)" style="margin-bottom: 12px;">
+            <input type="text" id="reg-name" placeholder="Account Name" style="margin-bottom: 12px;">
+            <input type="password" id="reg-pin" placeholder="Create PIN (4-6 digits)" style="margin-bottom: 12px;">
+            <input type="password" id="reg-confirm-pin" placeholder="Confirm PIN" style="margin-bottom: 12px;">
+            <button class="btn-pay" style="background: var(--accent-gold); color: black;" onclick="createAccount()">Create Account</button>
+            <p class="info-text">1 KES spent = 1 Point. Create an account to start collecting.</p>
+        </div>
+
+        <footer>© 2026 pacewisp</footer>
+    </div>
+
+    <script src="jquery-3.6.0.min.js"></script>
+    <script src="swal.js"></script>
+
+    <script>
+        var configData = null;
+        var selectedRedeemPlan = null;
+        var currentUserPoints = 0;
+        var currentUserPhone = '';
+        var currentUserPin = '';
+
+        $(document).ready(function () {
+            $.getJSON("data.json?v=" + Math.random(), function (data) {
+                if (data) configData = data;
+            }).fail(function () {
+                console.error("Cannot load data.json");
+            });
+        });
+
+        function toggleCreate() {
+            const panel = $('#create-panel');
+            if (panel.hasClass('hidden')) {
+                panel.removeClass('hidden');
+                $('html, body').animate({ scrollTop: panel.offset().top - 20 }, 300);
+            } else {
+                panel.addClass('hidden');
+            }
+        }
+
+        function accessAccount() {
+            const phone = $('#acc-phone').val().trim();
+            const pin = $('#acc-pin').val();
+
+            if (!phone || !pin) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Enter phone and PIN.', background: '#f8fafc', confirmButtonColor: '#2563eb' });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Loading...',
+                html: '<div class="custom-loader"><div class="loader-spin"></div></div>',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                background: '#f8fafc'
+            });
+
+            $.ajax({
+                type: "POST",
+                url: configData ? configData.links.pointsapi + '?action=view' : 'points_api.php?action=view',
+                contentType: "application/json",
+                data: JSON.stringify({ phone: phone, pin: pin }),
+                success: function (res) {
+                    Swal.close();
+                    if (res.status === 'success') {
+                        currentUserPoints = parseInt(res.points) || 0;
+                        currentUserPhone = phone;
+                        currentUserPin = pin;
+
+                        $('#points-value').text(currentUserPoints);
+                        $('#display-name').text(res.name || '-');
+                        $('#display-phone').text(res.phone || phone);
+
+                        buildRedeemGrid(currentUserPoints);
+
+                        $('#account-result').removeClass('hidden');
+                        $('html, body').animate({ scrollTop: $('#account-result').offset().top - 20 }, 400);
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'Account not found.', background: '#f8fafc', confirmButtonColor: '#2563eb' });
+                    }
+                },
+                error: function () {
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Connection failed.', background: '#f8fafc', confirmButtonColor: '#2563eb' });
+                }
+            });
+        }
+
+        function buildRedeemGrid(userPoints) {
+            const grid = $('#redeem-grid');
+            grid.empty();
+            selectedRedeemPlan = null;
+            $('#btn-confirm-redeem').addClass('hidden');
+
+            if (!configData || !configData.plans) {
+                grid.html('<p class="info-text">No packages available.</p>');
+                return;
+            }
+
+            configData.plans.forEach((plan, i) => {
+                const price = parseInt(plan.price) || 0;
+                const canAfford = userPoints >= price;
+                const opacity = canAfford ? '1' : '0.35';
+                const cursor = canAfford ? 'pointer' : 'not-allowed';
+                const border = canAfford ? '' : 'border-color: #e2e8f0;';
+
+                grid.append(`
+                    <div class="package-card" id="redeem-${i}" 
+                         style="opacity: ${opacity}; cursor: ${cursor}; ${border}"
+                         onclick="${canAfford ? `selectRedeemPlan(${i}, ${price})` : ''}">
+                        <div class="pkg-duration">${plan.name || plan.duration}</div>
+                        <div class="pkg-price">${price} pts</div>
+                        <div class="pkg-speed">KES ${plan.price}</div>
+                    </div>
+                `);
+            });
+
+            if (userPoints === 0) {
+                $('#redeem-info').text('You have no points yet. Purchase WiFi to earn points.');
+            } else {
+                $('#redeem-info').text('Tap a package you can afford to redeem your points.');
+            }
+        }
+
+        function selectRedeemPlan(index, pointsCost) {
+            $('.package-card').removeClass('selected');
+            $(`#redeem-${index}`).addClass('selected');
+            selectedRedeemPlan = { index: index, pointsCost: pointsCost, plan: configData.plans[index] };
+            $('#btn-confirm-redeem').removeClass('hidden');
+        }
+
+        function confirmRedeem() {
+            if (!selectedRedeemPlan) return;
+
+            const plan = selectedRedeemPlan.plan;
+
+            Swal.fire({
+                title: 'Confirm Redemption',
+                text: `Redeem ${selectedRedeemPlan.pointsCost} points for ${plan.name || plan.duration}?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Redeem',
+                cancelButtonText: 'Cancel',
+                background: '#f8fafc',
+                confirmButtonColor: '#2563eb'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Processing...',
+                        html: '<div class="custom-loader"><div class="loader-pulse"><div></div><div></div><div></div></div></div>',
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        background: '#f8fafc'
+                    });
+
+                    $.ajax({
+                        type: "POST",
+                        url: configData ? configData.links.pointsapi + '?action=redeem' : 'points_api.php?action=redeem',
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            phone: currentUserPhone,
+                            pin: currentUserPin,
+                            plan_name: plan.name || plan.duration,
+                            points_used: selectedRedeemPlan.pointsCost
+                        }),
+                        success: function (res) {
+                            if (res.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Redeemed!',
+                                    text: `You got ${plan.name || plan.duration}. Remaining: ${res.remaining_points} points.`,
+                                    background: '#f8fafc',
+                                    confirmButtonColor: '#2563eb'
+                                }).then(() => {
+                                    currentUserPoints = parseInt(res.remaining_points) || 0;
+                                    $('#points-value').text(currentUserPoints);
+                                    buildRedeemGrid(currentUserPoints);
+                                    if (currentUserPoints === 0) {
+                                        $('#btn-confirm-redeem').addClass('hidden');
+                                    }
+                                });
+                            } else {
+                                Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'Redemption failed.', background: '#f8fafc', confirmButtonColor: '#2563eb' });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({ icon: 'error', title: 'Error', text: 'Connection failed.', background: '#f8fafc', confirmButtonColor: '#2563eb' });
+                        }
+                    });
+                }
+            });
+        }
+
+        function createAccount() {
+            const phone = $('#reg-phone').val().trim();
+            const name = $('#reg-name').val().trim();
+            const pin = $('#reg-pin').val();
+            const confirmPin = $('#reg-confirm-pin').val();
+
+            if (!phone || !name || !pin || !confirmPin) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'All fields are required.', background: '#f8fafc', confirmButtonColor: '#2563eb' });
+                return;
+            }
+            if (!/^07\d{8}$/.test(phone)) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Enter valid phone number (07XXXXXXXX).', background: '#f8fafc', confirmButtonColor: '#2563eb' });
+                return;
+            }
+            if (pin.length < 4 || pin.length > 6) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'PIN must be 4-6 digits.', background: '#f8fafc', confirmButtonColor: '#2563eb' });
+                return;
+            }
+            if (pin !== confirmPin) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'PINs do not match.', background: '#f8fafc', confirmButtonColor: '#2563eb' });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Creating Account...',
+                html: '<div class="custom-loader"><div class="loader-spin"></div></div>',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                background: '#f8fafc'
+            });
+
+            $.ajax({
+                type: "POST",
+                url: configData ? configData.links.pointsapi + '?action=create' : 'points_api.php?action=create',
+                contentType: "application/json",
+                data: JSON.stringify({ phone: phone, name: name, pin: pin }),
+                success: function (res) {
+                    if (res.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Account Created!',
+                            text: 'You can now earn points on every WiFi purchase.',
+                            background: '#f8fafc',
+                            confirmButtonColor: '#2563eb'
+                        });
+                        $('#reg-phone, #reg-name, #reg-pin, #reg-confirm-pin').val('');
+                        $('#create-panel').addClass('hidden');
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'Failed to create account.', background: '#f8fafc', confirmButtonColor: '#2563eb' });
+                    }
+                },
+                error: function () {
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Connection failed. Try again.', background: '#f8fafc', confirmButtonColor: '#2563eb' });
+                }
+            });
+        }
+    </script>
+</body>
+</html>
